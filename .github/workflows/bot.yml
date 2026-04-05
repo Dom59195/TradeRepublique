@@ -1,0 +1,32 @@
+name: Trade Republic Safe Bot
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Télécharger le code
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Lancer le bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MAX_SIGNALS: ${{ vars.MAX_SIGNALS }}
+          CAPITAL: ${{ vars.CAPITAL }}
+          RISK_PER_TRADE: ${{ vars.RISK_PER_TRADE }}
+        run: python trade_republic_safe_bot.py
